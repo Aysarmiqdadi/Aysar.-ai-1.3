@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aysar AI 1.3 — أنشئ بلا حدود</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alexandria:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080b16;
+      --panel: rgba(20, 25, 45, .74);
+      --panel-solid: #12172b;
+      --line: rgba(255,255,255,.09);
+      --text: #f6f7ff;
+      --muted: #98a0ba;
+      --purple: #8c63ff;
+      --pink: #ed5ec5;
+      --blue: #48a7ff;
+      --green: #46d9a7;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: "Alexandria", sans-serif;
+      overflow-x: hidden;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 83% 10%, rgba(113, 69, 255, .2), transparent 25rem),
+        radial-gradient(circle at 12% 55%, rgba(45, 152, 255, .13), transparent 28rem),
+        linear-gradient(135deg, #080b16 0%, #0c1021 52%, #0c0a1b 100%);
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(2px);
+      opacity: .45;
+      animation: float 8s ease-in-out infinite alternate;
+    }
+    .orb.one { width: 220px; height: 220px; background: #7547ff; top: 12%; right: -80px; filter: blur(60px); }
+    .orb.two { width: 180px; height: 180px; background: #187ce9; bottom: 10%; left: -60px; filter: blur(60px); animation-delay: -4s; }
+    @keyframes float { to { transform: translateY(30px) translateX(-18px); } }
+
+    .container { width: min(1180px, calc(100% - 38px)); margin: auto; }
+    .navbar {
+      height: 82px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; color: white; }
+    .brand-mark {
+      position: relative;
+      width: 42px; height: 42px;
+      display: grid; place-items: center;
+      font-family: Arial, sans-serif;
+      font-size: 20px; font-weight: 800;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #a07aff, #5b45ee 62%, #f05bc5);
+      box-shadow: 0 8px 26px rgba(119, 81, 255, .35);
+    }
+    .brand-name { font-size: 18px; font-weight: 800; letter-spacing: -.7px; direction: ltr; }
+    .brand-name span { font-size: 10px; color: #c5b8ff; margin-right: 3px; font-weight: 600; }
+
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { color: var(--muted); font-size: 13px; text-decoration: none; transition: .2s; }
+    .nav-links a:hover, .nav-links a.active { color: #fff; }
+
+    .login-button, .primary-button {
+      border: 0;
+      cursor: pointer;
+      color: white;
+      font-family: inherit;
+      font-weight: 700;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+    }
+    .login-button {
+      padding: 11px 17px;
+      border-radius: 11px;
+      font-size: 12px;
+      background: rgba(255,255,255,.075);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .login-button:hover, .primary-button:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(111, 80, 255, .3); }
+
+    .hero { padding: 76px 0 38px; text-align: center; }
+    .badge {
+      width: fit-content; margin: 0 auto 23px;
+      padding: 8px 13px;
+      border: 1px solid rgba(159,131,255,.28);
+      border-radius: 30px;
+      color: #cfc5ff;
+      font-size: 11px;
+      background: rgba(116,75,233,.1);
+    }
+    .badge i { display: inline-block; margin-left: 7px; color: #ffcc70; font-style: normal; }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(33px, 5vw, 59px);
+      line-height: 1.3;
+      letter-spacing: -2px;
+      font-weight: 800;
+    }
+    .gradient-text {
+      background: linear-gradient(100deg, #fff 5%, #bdaaff 45%, #65c3ff 90%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .hero p {
+      color: var(--muted);
+      max-width: 630px;
+      margin: 18px auto 30px;
+      font-size: 14px;
+      line-height: 2;
+    }
+
+    .workspace {
+      max-width: 950px;
+      padding: 7px;
+      border-radius: 23px;
+      margin: 0 auto;
+      background: linear-gradient(120deg, rgba(153,112,255,.42), rgba(79,171,255,.18), rgba(237,94,197,.3));
+      box-shadow: 0 25px 70px rgba(0,0,0,.32);
+    }
+    .workspace-inner {
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(12, 16, 32, .92);
+      backdrop-filter: blur(18px);
+    }
+
+    .tool-tabs {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-bottom: 17px;
+    }
+    .tool-tab {
+      min-height: 70px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: #aab1ca;
+      font: inherit;
+      font-size: 11px;
+      background: transparent;
+      transition: .2s;
+    }
+    .tool-tab:hover { background: rgba(255,255,255,.045); color: white; }
+    .tool-tab.active {
+      color: white;
+      background: linear-gradient(135deg, rgba(137,95,255,.25), rgba(76,135,255,.16));
+      border-color: rgba(161,130,255,.4);
+    }
+    .tab-icon {
+      display: block;
+      width: 25px; height: 25px;
+      margin: 0 auto 7px;
+      color: #baa8ff;
+    }
+
+    .prompt-box {
+      position: relative;
+      min-height: 137px;
+      padding: 16px;
+      text-align: right;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: #10152a;
+    }
+    textarea {
+      width: 100%;
+      min-height: 62px;
+      resize: none;
+      padding: 0;
+      border: 0;
+      outline: none;
+      color: white;
+      font: 13px/1.9 "Alexandria", sans-serif;
+      background: transparent;
+    }
+    textarea::placeholder { color: #727b97; }
+    .prompt-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .add-row { display: flex; gap: 8px; }
+    .small-icon-btn {
+      display: grid; place-items: center;
+      width: 33px; height: 33px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 9px;
+      color: #aeb6cf;
+      cursor: pointer;
+      background: rgba(255,255,255,.04);
+      transition: .2s;
+    }
+    .small-icon-btn:hover { color: white; border-color: #9d7bff; background: rgba(143,103,255,.15); }
+    .small-icon-btn svg { width: 17px; height: 17px; }
+    .generate-button {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 17px;
+      border: 0; border-radius: 10px;
+      color: white; cursor: pointer;
+      font: 700 12px "Alexandria", sans-serif;
+      background: linear-gradient(115deg, #8052f4, #ad64ef);
+      box-shadow: 0 6px 17px rgba(118,72,240,.3);
+      transition: .25s;
+    }
+    .generate-button:hover { transform: scale(1.025); filter: brightness(1.1); }
+    .generate-button svg { width: 16px; height: 16px; }
+
+    .quick-options {
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 9px;
+      margin-top: 17px;
+    }
+    .quick-option {
+      border: 1px solid var(--line);
+      color: #adb4c9;
+      cursor: pointer;
+      padding: 8px 12px;
+      font: 11px "Alexandria", sans-serif;
+      border-radius: 9px;
+      background: rgba(255,255,255,.03);
+      transition: .2s;
+    }
+    .quick-option:hover { border-color: #8c68ef; color: #e3dcff; }
+
+    .features { padding: 53px 0 72px; }
+    .section-heading { text-align: center; margin-bottom: 25px; }
+    .section-heading h2 { margin: 0 0 9px; font-size: 23px; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: 12px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 13px; }
+    .feature-card {
+      padding: 18px;
+      min-height: 176px;
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      background: rgba(20,25,45,.6);
+      transition: .25s ease;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      background: rgba(29,35,61,.78);
+      border-color: rgba(151,118,255,.42);
+      box-shadow: 0 15px 30px rgba(0,0,0,.18);
+    }
+    .feature-icon {
+      display: grid; place-items: center;
+      width: 42px; height: 42px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      color: #e8e1ff;
+      background: linear-gradient(145deg, rgba(142,100,255,.35), rgba(60,120,255,.18));
+    }
+    .feature-icon svg { width: 22px; height: 22px; }
+    .feature-card h3 { margin: 0 0 8px; font-size: 14px; }
+    .feature-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.8; }
+
+    footer {
+      padding: 19px 0;
+      border-top: 1px solid var(--line);
+      color: #6f7894;
+      font-size: 10px;
+    }
+    .footer-inner { display: flex; justify-content: space-between; align-items: center; }
+    .footer-links { display: flex; gap: 17px; }
+    .footer-links a { color: inherit; text-decoration: none; }
+
+    .modal {
+      position: fixed; inset: 0; z-index: 20;
+      display: none;
+      align-items: center; justify-content: center;
+      padding: 18px;
+      background: rgba(4,6,14,.7);
+      backdrop-filter: blur(8px);
+    }
+    .modal.open { display: flex; animation: fade .2s ease; }
+    @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      width: min(420px, 100%);
+      padding: 27px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 22px;
+      background: #151a30;
+      box-shadow: 0 25px 75px rgba(0,0,0,.55);
+    }
+    .modal-card h2 { margin: 0 0 8px; font-size: 21px; }
+    .modal-card > p { margin: 0 0 21px; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .social-login {
+      display: flex; align-items: center; justify-content: center; gap: 11px;
+      width: 100%; padding: 13px; margin: 9px 0;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 11px;
+      color: white; cursor: pointer;
+      font: 600 12px "Alexandria", sans-serif;
+      background: rgba(255,255,255,.04);
+      transition: .2s;
+    }
+    .social-login:hover { background: rgba(255,255,255,.1); transform: translateY(-1px); }
+    .social-logo { width: 19px; height: 19px; display: grid; place-items: center; font-family: Arial; font-size: 18px; font-weight: bold; }
+    .google { color: #fff; }
+    .facebook { color: #4e90ff; }
+    .github { color: #fff; }
+    .close-modal { margin-top: 13px; border: 0; color: #a7afc9; cursor: pointer; font: 11px "Alexandria"; background: none; }
+    .toast {
+      position: fixed; z-index: 30; left: 50%; bottom: 23px;
+      padding: 12px 19px;
+      border: 1px solid rgba(162,132,255,.3);
+      border-radius: 12px;
+      color: white; font-size: 12px;
+      background: #1c2140;
+      box-shadow: 0 12px 34px rgba(0,0,0,.35);
+      transform: translate(-50%, 100px);
+      opacity: 0; transition: .35s;
+    }
+    .toast.show { transform: translate(-50%, 0); opacity: 1; }
+
+    @media (max-width: 760px) {
+      .navbar { height: 70px; }
+      .nav-links { display: none; }
+      .hero { padding-top: 52px; }
+      h1 { letter-spacing: -1.2px; }
+      .tool-tabs { grid-template-columns: repeat(3, 1fr); }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-card { min-height: 158px; }
+    }
+    @media (max-width: 440px) {
+      .container { width: min(100% - 24px, 1180px); }
+      .brand-name { font-size: 15px; }
+      .login-button { padding: 9px 11px; font-size: 10px; }
+      .workspace-inner { padding: 11px; }
+      .tool-tabs { gap: 5px; }
+      .tool-tab { min-height: 63px; font-size: 9px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .footer-inner { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="background"><div class="orb one"></div><div class="orb two"></div></div>
+
+  <header class="container">
+    <nav class="navbar">
+      <a class="brand" href="#">
+        <div class="brand-mark">A</div>
+        <div class="brand-name">Aysar AI <span>1.3</span></div>
+      </a>
+
+      <div class="nav-links">
+        <a class="active" href="#create">الرئيسية</a>
+        <a href="#tools">الأدوات</a>
+        <a href="#features">المميزات</a>
+        <a href="#community">المجتمع</a>
+      </div>
+
+      <button class="login-button" onclick="openLogin()">تسجيل الدخول</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container" id="create">
+      <div class="badge"><i>✦</i> الإصدار الجديد Aysar AI 1.3 متاح الآن</div>
+      <h1>حوّل أفكارك إلى واقع<br><span class="gradient-text">بالذكاء الاصطناعي</span></h1>
+      <p>أنشئ وعدّل الصور والفيديوهات، طوّر تطبيقات كاملة، وحوّل ملفاتك بسهولة — كل ما تحتاجه في منصة ذكية واحدة ومجانية.</p>
+
+      <div class="workspace" id="tools">
+        <div class="workspace-inner">
+          <div class="tool-tabs">
+            <button class="tool-tab active" data-mode="إنشاء صورة مذهلة" onclick="selectTab(this)">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+              الصور
+            </button>
+            <button class="tool-tab" data-mode="إنشاء فيديو احترافي" onclick="selectTab(this)">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="14" height="14" rx="3"/><path d="m17 10 4-2v8l-4-2z"/></svg>
+              الفيديو
+            </button>
+            <button class="tool-tab" data-mode="تعديل وتحسين الصورة" onclick="selectTab(this)">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/></svg>
+              التعديل
+            </button>
+            <button class="tool-tab" data-mode="إنشاء تطبيق ويب كامل" onclick="selectTab(this)">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M7 6h.01M10 6h.01"/><path d="m8 13 2 2-2 2m4 0h3"/></svg>
+              التطبيقات
+            </button>
+            <button class="tool-tab" data-mode="تحويل ملف إلى صيغة أخرى" onclick="selectTab(this)">
+              <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 15h8M8 11h3"/></svg>
+              الملفات
+            </button>
+          </div>
+
+          <div class="prompt-box">
+            <textarea id="prompt" placeholder="اكتب ما تريد إنشاءه... مثال: قطة فضائية ترتدي بدلة رائد فضاء، بأسلوب سينمائي"></textarea>
+            <div class="prompt-bottom">
+              <div class="add-row">
+                <button class="small-icon-btn" onclick="document.getElementById('fileInput').click()" title="إرفاق ملف">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.4 11.6-8.5 8.5a6 6 0 0 1-8.5-8.5l8.2-8.2a4 4 0 1 1 5.7 5.7l-8.2 8.2a2 2 0 0 1-2.8-2.8l7.5-7.5"/></svg>
+                </button>
+                <input id="fileInput" type="file" hidden onchange="fileSelected(this)">
+                <button class="small-icon-btn" onclick="suggestPrompt()" title="اقتراح ذكي">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 22h4"/><path d="M15.09 14.5c1.2-.9 1.91-2.32 1.91-3.82a5 5 0 0 0-10 0c0 1.5.71 2.92 1.91 3.82.7.53 1.09 1.1 1.09 1.68h4c0-.58.39-1.15 1.09-1.68Z"/></svg>
+                </button>
+              </div>
+              <button class="generate-button" onclick="generate()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 3 14 9-14 9V3z"/></svg>
+                <span id="generateText">إنشاء الآن</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="quick-options">
+            <button class="quick-option" onclick="setPrompt('شعار حديث وأنيق لمقهى عربي، ألوان بنفسجية وذهبية')">✦ إنشاء شعار</button>
+            <button class="quick-option" onclick="setPrompt('فيديو إعلاني قصير لمنتج تقني بأسلوب سينمائي')">◉ فيديو إعلاني</button>
+            <button class="quick-option" onclick="setPrompt('تطبيق لإدارة المهام اليومية بواجهة عربية عصرية')">⌘ اصنع تطبيقاً</button>
+            <button class="quick-option" onclick="setPrompt('تحويل ملف PDF إلى مستند Word قابل للتعديل')">⇄ تحويل ملف</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features container" id="features">
+      <div class="section-heading">
+        <h2>كل أدوات الإبداع بين يديك</h2>
+        <p>تجربة سريعة، ذكية، ومجانية بالكامل</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+          </div>
+          <h3>صور بلا حدود</h3>
+          <p>أنشئ صوراً احترافية من وصفك النصي، بأي أسلوب أو مقاس.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="14" height="14" rx="3"/><path d="m17 10 4-2v8l-4-2z"/></svg>
+          </div>
+          <h3>فيديو من خيالك</h3>
+          <p>حوّل أفكارك وصورك إلى مقاطع فيديو مذهلة في ثوانٍ.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 8h18M7 6h.01M10 6h.01"/><path d="m8 13 2 2-2 2m4 0h3"/></svg>
+          </div>
+          <h3>تطبيق بضغطة زر</h3>
+          <p>صف فكرتك ودع Aysar AI يبني تطبيقك مع واجهة جاهزة.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 15h8M8 11h8M8 15h6"/></svg>
+          </div>
+          <h3>ملفات أذكى</h3>
+          <p>حوّل، لخّص، واستخرج المعلومات من ملفاتك بكل سهولة.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer id="community">
+    <div class="container footer-inner">
+      <span>© 2025 Aysar AI 1.3 — صُنع لإطلاق الإبداع</span>
+      <div class="footer-links">
+        <a href="#">الخصوصية</a>
+        <a href="#">الشروط</a>
+        <a href="#">الدعم</a>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" id="loginModal" onclick="closeOutside(event)">
+    <div class="modal-card">
+      <div class="brand-mark" style="margin:0 auto 14px">A</div>
+      <h2>أهلاً بك في Aysar AI</h2>
+      <p>سجّل دخولك واحفظ أعمالك وابدأ الإبداع مجاناً.</p>
+      <button class="social-login" onclick="socialLogin('Google')"><span class="social-logo google">G</span> المتابعة باستخدام Google</button>
+      <button class="social-login" onclick="socialLogin('Facebook')"><span class="social-logo facebook">f</span> المتابعة باستخدام Facebook</button>
+      <button class="social-login" onclick="socialLogin('GitHub')"><span class="social-logo github">●</span> المتابعة باستخدام GitHub</button>
+      <button class="close-modal" onclick="closeLogin()">ليس الآن</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let selectedMode = "الصور";
+
+    function selectTab(button) {
+      document.querySelectorAll(".tool-tab").forEach(tab => tab.classList.remove("active"));
+      button.classList.add("active");
+      selectedMode = button.textContent.trim();
+      document.getElementById("prompt").placeholder = "اكتب ما تريد في قسم " + selectedMode + "...";
+    }
+
+    function setPrompt(text) {
+      document.getElementById("prompt").value = text;
+      document.getElementById("prompt").focus();
+    }
+
+    function suggestPrompt() {
+      const suggestions = [
+        "مدينة عربية مستقبلية وقت الغروب، تفاصيل فائقة، إضاءة سينمائية",
+        "تصميم تطبيق لطلب الطعام بواجهة أنيقة وسهلة الاستخدام",
+        "فيديو قصير لسفر عبر جبال ضبابية بأسلوب وثائقي",
+        "تحويل عرض تقديمي إلى ملف PDF احترافي ومنسق"
+      ];
+      setPrompt(suggestions[Math.floor(Math.random() * suggestions.length)]);
+      showToast("تمت إضافة فكرة ذكية لك ✦");
+    }
+
+    function fileSelected(input) {
+      if (input.files && input.files[0]) showToast("تم إرفاق الملف: " + input.files[0].name);
+    }
+
+    function generate() {
+      const prompt = document.getElementById("prompt").value.trim();
+      if (!prompt) {
+        showToast("اكتب وصفاً أولاً لنبدأ الإبداع");
+        document.getElementById("prompt").focus();
+        return;
+      }
+      const btn = document.querySelector(".generate-button");
+      const label = document.getElementById("generateText");
+      btn.disabled = true;
+      label.textContent = "جاري الإنشاء...";
+      showToast("بدأ Aysar AI العمل على طلبك ✦");
+      setTimeout(() => {
+        btn.disabled = false;
+        label.textContent = "إنشاء الآن";
+        showToast("اكتمل طلبك بنجاح! سجل دخولك لحفظ النتيجة.");
+      }, 1800);
+    }
+
+    function openLogin() { document.getElementById("loginModal").classList.add("open"); }
+    function closeLogin() { document.getElementById("loginModal").classList.remove("open"); }
+    function closeOutside(event) { if (event.target.id === "loginModal") closeLogin(); }
+    function socialLogin(provider) {
+      closeLogin();
+      showToast("سيتم توجيهك لتسجيل الدخول عبر " + provider);
+    }
+
+    let toastTimer;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => toast.classList.remove("show"), 3200);
+    }
+  </script>
+</body>
+</html>
